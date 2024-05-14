@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+    <title>TransDana</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<div th:replace="~{operator/header_operator :: header}"></div>
+
+<div class="container-fluid">
+    <br>
+    <h5 class="text-center">[[${pageTitle}]]</h5>
+
+    <div class="my-3">
+        <form th:action="@{/operator/route/save}" method="post" enctype="multipart/form-data" th:object="${route}"
+              style="width:60%; max-width: 550px; margin: 0 auto">
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="p-3">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="number">Number</label>
+                    <div class="col-sm-9">
+                        <input type="number" th:field="*{number}" required minlength="2" maxlength="128"
+                               class="form-control"
+                               id="number"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="arrivaldate">Arrival Date</label>
+                    <div class="col-sm-9">
+                        <input type="datetime-local" th:field="*{arrivaldate}" minlength="2" maxlength="256"
+                               class="form-control"
+                               id="arrivaldate"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="departuredate">Depart Date</label>
+                    <div class="col-sm-9">
+                        <input type="datetime-local" th:field="*{departuredate}" minlength="2" maxlength="256"
+                               class="form-control"
+                               id="departuredate"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="arrival_address">Address1</label>
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{arrival_address}" minlength="2" maxlength="256"
+                               class="form-control"
+                               id="arrival_address"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="dep_address">Address2</label>
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{departure_address}" minlength="2" maxlength="256"
+                               class="form-control"
+                               id="dep_address"/>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="car_id">Select a car:</label>
+                    <div class="col-sm-9">
+
+                        <select name="car" class="form-control" id="car_id">
+                            <option th:each="car : ${cars}" th:value="${car.getId()}"
+                                    th:text="${car.getNumber()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="arr_city">Arrival city:</label>
+                    <div class="col-sm-9">
+                        <select name="cityArrival" class="form-control" id="arr_city">
+                            <option th:each="arr_city : ${arrival_city}" th:value="${arr_city.getId()}"
+                                    th:text="${arr_city.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="dep_city">Depart city:</label>
+                    <div class="col-sm-9">
+                        <select name="cityDeparture" class="form-control" id="dep_city">
+                            <option th:each="dep_city : ${departure_city}" th:value="${dep_city.getId()}"
+                                    th:text="${dep_city.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="user">Name driver:</label>
+                    <div class="col-sm-9">
+                        <select name="user" class="form-control" id="user">
+                            <option th:each="us : ${logins}" th:value="${us.user.getId()}"
+                                    th:text="${us.user.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-center" style="width:80%;">
+                    <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2"/>
+                    <input type="button" value="Cancel" id="btnCancel" class="btn btn-secondary btn-sm"/>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--<div th:replace="operator/footer :: footer"></div>-->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnCancel").on("click", function () {
+            window.location = "[[@{/operator/routes}]]";
+        });
+    });
+</script>
+
+</body>
+
+</html>

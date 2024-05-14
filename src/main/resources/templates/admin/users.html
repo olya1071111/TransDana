@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+    <title>TransDana logistics</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/templates/users/style.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<div th:replace="~{admin/header_admin :: header}"></div>
+
+<div class="container-fluid" style=" width: 90%; max-width: 700px; margin: 0 auto; font-size: 14px;">
+    <br>
+    <h4 class="text-center">Employees</h4>
+    <br>
+
+
+    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"
+         role="alert">
+        [[${message}]]
+
+        <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="input-group-text" style="position: absolute;top: 80px; left: 940px;">
+        <a class="nav-link" style="text-decoration: none; font-size: 15px; background: #007bff;
+                    color: white; border-radius: 4px;width: 110px; height:37px;"
+           th:href="@{/admin/user/new}">Add User</a>
+    </div>
+
+    <div th:if="${users.size()> 0}">
+        <table class="table table-hover table-responsive-xl"
+               style="align-content: center;align-content: center;">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Job</th>
+                <th scope="col">Login</th>
+                <th scope="col">Role</th>
+                <th scope="col">Actions</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="us:${users}">
+                <th scope="row">[[${us.user.name}]]</th>
+                <td>[[${us.user.job}]]</td>
+                <td>[[${us.username}]]</td>
+                <td>[[${us.role}]]</td>
+                <td>
+                    <a th:href="@{'/admin/user/' + ${us.id}}" title="Edit user"
+                       class="fa-regular fa-pen-to-square icon-dark"></a>
+                    &nbsp;
+                    <a th:href="@{'/admin/user/delete/' + ${us.id} + '/' + ${us.user.name}+ '/' + ${us.role}}"
+                       th:tutorialTitle="${us.user.name}" id="btnDelete"
+                       title="Delete car" class="fa-regular fa-trash-can icon-dark btn-delete"></a>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="" th:unless="${users.size() > 0}">
+        <span>No cars found!</span>
+    </div>
+</div>
+
+<div class="modal fade text-center" id="confirmModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Massage</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <span id="confirmText"></span>
+            </div>
+
+            <div class="modal-footer">
+                <a type="button" id="yesBtn" class="btn btn-danger" style="background-color: #007bff;">Yes</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!--<div th:replace="fragments/footer :: footer"></div>-->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".btn-delete").on("click", function (e) {
+            e.preventDefault();
+            link = $(this);
+
+            tutorialTitle = link.attr("tutorialTitle");
+            $("#yesBtn").attr("href", link.attr("href"));
+            $("#confirmText").html("Do you want to delete a user \<strong\>" + tutorialTitle + "\<\/strong\>?");
+            $("#confirmModal").modal();
+        });
+    });
+</script>
+
+</div>
+</body>
+
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+    <title>TransDana logistics</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/templates/users/style.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<div th:replace="~{admin/header_admin :: header}"></div>
+
+<div class="container-fluid" style=" width: 85%; max-width: 1400px; margin: 0 auto; font-size: 14px;">
+    <br>
+    <h4 class="text-center">The Routes</h4>
+
+
+    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"
+         role="alert">
+        [[${message}]]
+        <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="my-3">
+        <form th:action="@{/admin/routes}" th:object="${route}" id="searchForm">
+            <div class="row d-flex"
+                 style=" width: 80%; display: flex; column-gap: 45px;">
+                <div class="col-md-6 mt-2">
+                    <div class="search"
+                         style="display: flex; align-items: center; justify-content: center; column-gap: 10px;">
+                        <i class="fa fa-search"></i>
+                        From <input id="arrivalDate" type="date" name="arrivalDate" th:value="${arrivalDate}" required
+                                    class="form-control">
+                        to <input id="departureDate" type="date" name="departureDate" th:value="${departureDate}"
+                                  required
+                                  class="form-control">
+                        <button type="submit" class="btn btn-secondary" style="background-color: #007bff;">Search
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-3 input-group mt-2">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="pageSize">Items per page:</label>
+                    </div>
+                    <select form="searchForm" name="size" th:value="${pageSize}" onchange="changePageSize()"
+                            class="size-select"
+                            id="pageSize">
+                        <option th:each="s : ${ {3, 5, 9} }" th:value="${s}" th:text="${s}"
+                                th:selected="${s == pageSize}"></option>
+                    </select>
+                </div>
+
+
+                <div class="input-group-text" style="position: absolute; left: 1100px;">
+                    <a class="nav-link" style="text-decoration: none; font-size: 15px; background: #007bff;
+                    color: white; border-radius: 4px;width: 110px; height:37px;"
+                       th:href="@{/admin/route/new}">Add Route</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${routes.size()> 0}">
+        <table class="table table-hover table-responsive-xl"
+               style="width: 90%; align-content: center;align-content: center;">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Arrival date</th>
+                <th scope="col">Car</th>
+                <th scope="col">City Arrival</th>
+                <th scope="col">Address arrival</th>
+                <th scope="col">Depart date</th>
+                <th scope="col">Depart city</th>
+                <th scope="col">Address depart</th>
+                <th scope="col">Driver</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions routes</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="route:${routes}">
+                <th scope="row">[[${route.number}]]</th>
+                <td>[[${route.arrivaldate}]]</td>
+                <td>[[${route.car.number}]]</td>
+                <td>[[${route.cityArrival.name}]]</td>
+                <td>[[${route.arrival_address}]]</td>
+                <td>[[${route.departuredate}]]</td>
+                <td>[[${route.cityDeparture.name}]]</td>
+                <td>[[${route.departure_address}]]</td>
+                <td>[[${route.user.name}]]</td>
+                <td>[[${route.status}]]</td>
+
+                <td>
+                    <a th:href="@{'/admin/' + ${route.id}}" title="Edit this route"
+                       class="fa-regular fa-pen-to-square icon-dark"></a>
+                    &nbsp;
+                    <a th:href="@{'/admin/delete/' + ${route.id} + '/' + ${route.number}}"
+                       th:tutorialTitle="${route.number}" id="btnDelete"
+                       title="Delete this route" class="fa-regular fa-trash-can icon-dark btn-delete"></a>
+
+                    <a th:href="@{'/admin/edit/' + ${route.id} + '/' + ${route.number} + '/' + ${route.status} }"
+                       title="Change status"
+                       class="fa-solid fa-check" style="margin-left: 10px "></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="" th:unless="${routes.size() > 0}">
+        <span>No routes found!</span>
+    </div>
+
+    <nav aria-label="Pagination" th:if="${totalPages > 0}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="admin/paging :: paging(1, '<<', 'First Page')"></a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="admin/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                <a th:replace="admin/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="admin/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="admin/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<div class="modal fade text-center" id="confirmModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Massage</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <span id="confirmText"></span>
+            </div>
+
+            <div class="modal-footer">
+                <a type="button" id="yesBtn" class="btn btn-danger" style="background-color: #007bff;">Yes</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".btn-delete").on("click", function (e) {
+            e.preventDefault();
+            link = $(this);
+
+            tutorialTitle = link.attr("tutorialTitle");
+            $("#yesBtn").attr("href", link.attr("href"));
+            $("#confirmText").html("Do you want to delete the Route № \<strong\>" + tutorialTitle + "\<\/strong\>?");
+            $("#confirmModal").modal();
+        });
+    });
+
+    function changePageSize() {
+        $("#searchForm").submit();
+    }
+</script>
+
+</div>
+</body>
+
+</html>

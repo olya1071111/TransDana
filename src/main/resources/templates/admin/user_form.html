@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+    <title>TransDana</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<div th:replace="~{admin/header_admin :: header}"></div>
+
+<div class="container-fluid">
+    <br>
+    <div class="my-3">
+        <form th:action="@{/admin/user/new}" method="post" enctype="multipart/form-data" th:object="${user}"
+              id="searchForm"
+              style="width:80%; max-width: 400px; margin: 0 auto">
+
+            <h5 class="text-center">[[${pageTitle}]]</h5>
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="p-3">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="name">Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{name}" required minlength="2" maxlength="128"
+                               class="form-control" id="name"/>
+                        <div style="color:red;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="job">Job</label>
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{job}" minlength="1" maxlength="10"
+                               class="form-control" id="job"/>
+                        <div style="color:red;" th:if="${#fields.hasErrors('job')}" th:errors="*{job}"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="p-3" th:object="${login}">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="username">Login</label>
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{username}" minlength="2" maxlength="256"
+                               class="form-control" id="username"/>
+                        <div style="color:red;" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="password">Password</label>
+                    <div class="col-sm-9">
+                        <input type="text" th:field="*{password}" minlength="2" maxlength="256"
+                               class="form-control" id="password"/>
+                        <div style="color:red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Select:</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" th:field="*{role}">
+                            <option value="ROLE_USER">USER</option>
+                            <option value="ROLE_OPERATOR">OPERATOR</option>
+                            <option value="ROLE_ADMIN">ADMIN</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="text-center" style="width:100%;">
+                    <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2"/>
+                    <input type="button" value="Cancel" id="btnCancel" class="btn btn-secondary btn-sm"/>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--<div th:replace="operator/footer :: footer"></div>-->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnCancel").on("click", function () {
+            window.location = "[[@{/admin/users}]]";
+        });
+    });
+
+</script>
+
+</body>
+
+</html>
